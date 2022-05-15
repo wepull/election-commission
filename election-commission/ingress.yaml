@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ec
+  namespace: default
+spec:
+  ingressClassName: nginx 
+  rules:
+  - host: "ec.10.10.0.10.nip.io"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: election-commission
+            port:
+              number: 80
