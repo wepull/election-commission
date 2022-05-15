@@ -13,12 +13,12 @@ registry: &defaultRegistry local-registry:5002
 services:
   voter: 
     imageName: voter # without registry-host and tag
-    imageTag: *defaultTag
+    imageTag: latest
     serviceName: voter
     servicePort: *defaultServicePort
   ballot: 
     imageName: ballot # without registry-host and tag
-    imageTag: *defaultTag
+    imageTag: latest
     serviceName: "ballot"
     servicePort: *defaultServicePort
   electionCommission: 
@@ -28,6 +28,6 @@ services:
     servicePort: *defaultServicePort
   ecserver: 
     imageName: ecserver # without registry-host and tag
-    imageTag: *defaultTag
+    imageTag: latest
     serviceName: "ecserver"
     servicePort: *defaultServicePort
