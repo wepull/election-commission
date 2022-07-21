@@ -37,8 +37,8 @@ endif
 push:
 	docker tag ${EC_IMG}:${IMAGE_TAG} zbio/${EC_IMG}:${IMAGE_TAG}
 	docker push zbio/${EC_IMG}:${IMAGE_TAG}
-	docker tag ${TEST_IMG}:${IMAGE_TAG} zbio/${TEST_IMG}:${IMAGE_TAG}
-	docker push zbio/${TEST_IMG}:${IMAGE_TAG}
+	# docker tag ${TEST_IMG}:${IMAGE_TAG} zbio/${TEST_IMG}:${IMAGE_TAG}
+	# docker push zbio/${TEST_IMG}:${IMAGE_TAG}
 
 .PHONY: deploy
 deploy:
