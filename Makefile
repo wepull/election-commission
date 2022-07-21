@@ -1,8 +1,6 @@
-VOTER_IMG=voter
-BALLOT_IMG=ballot
-ECSVR_IMG=ecserver
 TEST_IMG=service-test-suite
 EC_IMG=election-commission
+COMMITID := $(shell git rev-parse HEAD)
 ifndef IMAGE_TAG
   IMAGE_TAG=latest
 endif
@@ -18,17 +16,21 @@ dockerise: build-voter build-ballot build-ecserver build-ec build-test
 .PHONY: build-test
 build-test:
 ifdef DOCKER_HOST
-	docker -H ${DOCKER_HOST} build -t ${TEST_IMG}:${IMAGE_TAG} -f service-test-suite/Dockerfile service-test-suite
+	docker -H ${DOCKER_HOST} build -t ${TEST_IMG}:${COMMITID} -f service-test-suite/Dockerfile service-test-suite
+	docker -H ${DOCKER_HOST} tag ${TEST_IMG}:${COMMITID} ${TEST_IMG}:${IMAGE_TAG}
 else
 	docker build -t ${TEST_IMG}:${IMAGE_TAG} -f service-test-suite/Dockerfile service-test-suite
+	docker tag ${TEST_IMG}:${COMMITID} ${TEST_IMG}:${IMAGE_TAG}
 endif
 
 .PHONY: build-ec
 build-ec:
 ifdef DOCKER_HOST
-	docker -H ${DOCKER_HOST} build -t ${EC_IMG}:${IMAGE_TAG} -f election-commission/Dockerfile election-commission
+	docker -H ${DOCKER_HOST} build -t ${EC_IMG}:${COMMITID} -f election-commission/Dockerfile election-commission
+	docker -H ${DOCKER_HOST} tag ${EC_IMG}:${COMMITID} ${EC_IMG}:${IMAGE_TAG}
 else
 	docker build -t ${EC_IMG}:${IMAGE_TAG} -f election-commission/Dockerfile election-commission
+	docker tag ${EC_IMG}:${COMMITID} ${EC_IMG}:${IMAGE_TAG}
 endif
 		
 .PHONY: push
