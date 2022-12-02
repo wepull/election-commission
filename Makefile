@@ -10,8 +10,15 @@ CLUSTER_IP := $(shell ping -W2 -n -q -c1 current-cluster-roost.io  2> /dev/null 
 .PHONY: all
 all: dockerise helm-deploy
 
+.PHONY: pre-dockerise
+pre-dockerise:
+	docker pull golang:1.19.3-alpine3.16
+	docker pull alpine:3.16
+	docker pull node:14.21.1-alpine3.16
+	docker pull nginx:stable-alpine
+
 .PHONY: dockerise
-dockerise: build-voter build-ballot build-ecserver build-ec build-test
+dockerise: pre-dockerise build-ec # build-test
 
 .PHONY: build-test
 build-test:
@@ -19,7 +26,7 @@ ifdef DOCKER_HOST
 	docker -H ${DOCKER_HOST} build -t ${TEST_IMG}:${COMMITID} -f service-test-suite/Dockerfile service-test-suite
 	docker -H ${DOCKER_HOST} tag ${TEST_IMG}:${COMMITID} ${TEST_IMG}:${IMAGE_TAG}
 else
-	docker build -t ${TEST_IMG}:${IMAGE_TAG} -f service-test-suite/Dockerfile service-test-suite
+	docker build -t ${TEST_IMG}:${COMMITID} -f service-test-suite/Dockerfile service-test-suite
 	docker tag ${TEST_IMG}:${COMMITID} ${TEST_IMG}:${IMAGE_TAG}
 endif
 
@@ -29,7 +36,7 @@ ifdef DOCKER_HOST
 	docker -H ${DOCKER_HOST} build -t ${EC_IMG}:${COMMITID} -f election-commission/Dockerfile election-commission
 	docker -H ${DOCKER_HOST} tag ${EC_IMG}:${COMMITID} ${EC_IMG}:${IMAGE_TAG}
 else
-	docker build -t ${EC_IMG}:${IMAGE_TAG} -f election-commission/Dockerfile election-commission
+	docker build -t ${EC_IMG}:${COMMITID} -f election-commission/Dockerfile election-commission
 	docker tag ${EC_IMG}:${COMMITID} ${EC_IMG}:${IMAGE_TAG}
 endif
 		
